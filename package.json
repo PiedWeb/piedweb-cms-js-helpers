@@ -1,0 +1,26 @@
+{
+  "name": "piedweb-cms-js-helpers",
+  "version": "0.0.1",
+  "description": "PiedWeb/CMS (php)'s javascript functions for ui front end (native functions)",
+  "author": "Robin D. <contact@piedweb.com>",
+  "license": "MIT",
+  "scripts": {
+    "prettier": "prettier ./src/*.{js,scss} --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PiedWeb/piedweb-cms-js-helpers.git"
+  },
+  "keywords": [
+    "pied web",
+    "native"
+  ],
+  "bugs": {
+    "url": "https://github.com/PiedWeb/piedweb-cms-js-helpers/issues"
+  },
+  "homepage": "https://dev.piedweb.com",
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
