@@ -117,7 +117,7 @@ export function formToSky(userOptions = {}) {
  * @param {string} src
  */
 export function responsiveImage(src) {
-  var screenWidth = document.clientWidth;
+  var screenWidth = window.innerWidth;
   if (screenWidth <= 576) {
     src = src.replace("/default/", "/xs/");
   } else if (screenWidth <= 768) {
