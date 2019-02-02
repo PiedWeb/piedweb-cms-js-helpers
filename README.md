@@ -9,6 +9,8 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/PiedWeb/piedweb-cms-js-helpers.svg?style=flat)](https://scrutinizer-ci.com/g/PiedWeb/piedweb-cms-js-helpers)
 [![Total Downloads](https://img.shields.io/npm/dt/piedweb-cms-js-helpers.svg)](https://www.npmjs.com/package/piedweb-cms-js-helpers)
 
+[PiedWeb/CMS](https://github.com/PiedWeb/CMS)'s javascript functions for ui front end (native).
+
 ## Install
 
 Via [npm](https://www.npmjs.com/package/piedweb-cms-js-helpers)
