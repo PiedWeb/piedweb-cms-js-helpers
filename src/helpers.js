@@ -217,14 +217,14 @@ export async function uncloakLinks(attribute = "data-rot") {
     element.addEventListener(
       "click",
       function(e) {
-        convertLinkOnFly(e);
+        convertLinkOnEvent(e);
       },
       { once: true }
     );
     element.addEventListener(
       "mouseover",
       function(e) {
-        convertInLinksRot13OnFly(e);
+        convertLinkOnEvent(e);
       },
       { once: true }
     );
