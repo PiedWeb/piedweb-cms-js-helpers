@@ -314,3 +314,43 @@ export function convertImageLinkToWebPLink() {
 
   if (testWebPSupport()) switchToWebP();
 }
+
+/**
+ * Simple Image Lazy Loader
+ * original from : https://davidwalsh.name/lazyload-image-fade
+ *
+ * @param {string}  attribute
+ *
+ * @example
+ * imgLazyLoad()
+ * <span data-img=/img/me.png>Tagada</span> or <img data-img=/img/me.png alt=Tagada>
+ *
+ * will be converted to
+ *
+ * <img src=/img/me.png alt=Tagada />
+ * 
+ * still used in piedvert. To remove ?!
+ */
+export function imgLazyLoad(attribute = "data-img") {
+  [].forEach.call(document.querySelectorAll("[" + attribute + "]"), function(
+    img
+  ) {
+    var newDomImg = document.createElement("img");
+    var src = img.getAttribute(attribute);
+    img.removeAttribute(attribute);
+    for (var i = 0, n = img.attributes.length; i < n; i++) {
+      newDomImg.setAttribute(
+        img.attributes[i].nodeName,
+        img.attributes[i].nodeValue
+      );
+    }
+    if (newDomImg.getAttribute("alt") === null && img.textContent != "") {
+      newDomImg.setAttribute("alt", img.textContent);
+    }
+    newDomImg.setAttribute(
+      "src",
+      typeof responsiveImage === "function" ? responsiveImage(src) : src
+    );
+    img.outerHTML = newDomImg.outerHTML;
+  });
+}
