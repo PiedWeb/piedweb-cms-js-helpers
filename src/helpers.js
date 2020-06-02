@@ -20,9 +20,9 @@
 export function liveBlock(attribute = "data-live") {
   document.querySelectorAll("[" + attribute + "]").forEach(item => {
     fetch(item.getAttribute(attribute), {
-      headers: { "Content-Type": "application/json", Accept: "text/plain" },
+      //headers: { "Content-Type": "application/json", Accept: "text/plain" },
       method: "POST",
-      credentials: "same-origin"
+      credentials: "include"
     })
       .then(function(response) {
         return response.text();
@@ -44,36 +44,34 @@ export function liveForm(selector = '.live-form') {
     if (item.querySelector("form") !== null) {
       item.querySelector("form").addEventListener("submit", e => {
         e.preventDefault();
-        sendForm(e);
+        sendForm(e, item);
       });
     }
   });
 
   var setLoader = function (form) {
     var $submitButton = getSubmitButton(form);
-    if ($submitButton !== null) {
+    if ($submitButton !== undefined) {
       var initialButton = $submitButton.outerHTML;
       $submitButton.innerHTML = '';
-      $submitButton.outerHTML = '<div style="width:1em;height:1em;border: 3px solid #222;border-top-color: #fff;border-radius: 50%;  animation: 1s spin linear infinite;"></div><style>@keyframes spin {from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>';
+      $submitButton.outerHTML = '<div style="width:1em;height:1em;border: 2px solid #222;border-top-color: #fff;border-radius: 50%;  animation: 1s spin linear infinite;"></div><style>@keyframes spin {from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>';
     }
   }
   
-  var sendForm = function(form) {
+  var sendForm = function(form, liveFormBlock) {
      setLoader(form);
      
     var formData = new FormData(form.srcElement);
     fetch(form.srcElement.action, {
       method: "POST",
       body: formData,
-      credentials: "same-origin"
+      credentials: "include"
     })
       .then(function(response) {
         return response.text();
       })
       .then(function(body) {
-        form.srcElement.outerHTML = body;
-
-        document.dispatchEvent(new Event("DOMChanged"));
+        liveFormBlock.outerHTML = body;
       })
       .then(function() {
         document.dispatchEvent(new Event("DOMChanged"));
@@ -154,7 +152,7 @@ export async function uncloakLinks(attribute = "data-rot") {
   };
 
   var fireEventLinksBuilt = async function(element, event) {
-    await document.dispatchEvent(new Event("linksBuilt"));
+    await document.dispatchEvent(new Event("DOMChanged"));
 
     var clickEvent = new Event(event.type);
     element.dispatchEvent(clickEvent);
