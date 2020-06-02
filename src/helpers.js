@@ -12,28 +12,46 @@
  */
 
 /**
+ * Live Block Watcher (and button)
+ * 
  * Fetch (ajax) function permitting to get block via a POST request
- * (prevent from spam)
  *
  * @param {string} attribute
  */
 export function liveBlock(attribute = "data-live") {
-  document.querySelectorAll("[" + attribute + "]").forEach(item => {
+    
+  var btnToBlock = function(event, btn) {
+    btn.setAttribute(attribute, btn.getAttribute("src-"+attribute));
+    getLiveBlock(btn);    
+  }
+  
+  var getLiveBlock = function(item) {
     fetch(item.getAttribute(attribute), {
       //headers: { "Content-Type": "application/json", Accept: "text/plain" },
       method: "POST",
       credentials: "include"
     })
-      .then(function(response) {
-        return response.text();
-      })
-      .then(function(body) {
-        item.removeAttribute(attribute);
-        item.innerHTML = body;
+    .then(function(response) {
+      return response.text();
+    })
+    .then(function(body) {
+      item.removeAttribute(attribute);
+      item.outerHTML = body;
 
-        document.dispatchEvent(new Event("DOMChanged"));
-      });
+      document.dispatchEvent(new Event("DOMChanged"));
+    });
+  }
+  
+  document.querySelectorAll("[" + attribute + "]").forEach(item => {
+    getLiveBlock(item);
   });
+  
+  document.querySelectorAll("[src-" + attribute + "]").forEach(item => {
+    item.addEventListener("click", event => {
+      btnToBlock(event, item);
+    });
+  });
+  
 }
 
 /**
