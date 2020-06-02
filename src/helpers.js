@@ -18,15 +18,15 @@
  *
  * @param {string} attribute
  */
-export function liveBlock(attribute = "data-live") {
+export function liveBlock(liveBlockAttribute = "data-live", liveFormSelector = ".live-form") {
     
   var btnToBlock = function(event, btn) {
-    btn.setAttribute(attribute, btn.getAttribute("src-"+attribute));
-    getLiveBlock(btn);    
+    btn.setAttribute(liveBlockAttribute, btn.getAttribute("src-"+liveBlockAttribute));
+    getLiveBlock(btn);
   }
   
   var getLiveBlock = function(item) {
-    fetch(item.getAttribute(attribute), {
+    fetch(item.getAttribute(liveBlockAttribute), {
       //headers: { "Content-Type": "application/json", Accept: "text/plain" },
       method: "POST",
       credentials: "include"
@@ -35,44 +35,22 @@ export function liveBlock(attribute = "data-live") {
       return response.text();
     })
     .then(function(body) {
-      item.removeAttribute(attribute);
+      item.removeAttribute(liveBlockAttribute);
       item.outerHTML = body;
-
+    }).
+    then(function() {
       document.dispatchEvent(new Event("DOMChanged"));
     });
   }
-  
-  document.querySelectorAll("[" + attribute + "]").forEach(item => {
-    getLiveBlock(item);
-  });
-  
-  document.querySelectorAll("[src-" + attribute + "]").forEach(item => {
-    item.addEventListener("click", event => {
-      btnToBlock(event, item);
-    });
-  });
-  
-}
 
-/**
- * ajaxify-form
- */
-export function liveForm(selector = '.live-form') {
-  document.querySelectorAll(selector).forEach(item => {
-    if (item.querySelector("form") !== null) {
-      item.querySelector("form").addEventListener("submit", e => {
-        e.preventDefault();
-        sendForm(e, item);
-      });
-    }
-  });
-
+  var htmlLoader = '<div style="width:1em;height:1em;border: 2px solid #222;border-top-color: #fff;border-radius: 50%;  animation: 1s spin linear infinite;"></div><style>@keyframes spin {from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>';
+  
   var setLoader = function (form) {
     var $submitButton = getSubmitButton(form);
     if ($submitButton !== undefined) {
       var initialButton = $submitButton.outerHTML;
       $submitButton.innerHTML = '';
-      $submitButton.outerHTML = '<div style="width:1em;height:1em;border: 2px solid #222;border-top-color: #fff;border-radius: 50%;  animation: 1s spin linear infinite;"></div><style>@keyframes spin {from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>';
+      $submitButton.outerHTML = htmlLoader;
     }
   }
   
@@ -105,6 +83,29 @@ export function liveForm(selector = '.live-form') {
     }
     return null;
   };
+  
+  
+  // Listen data-live
+  document.querySelectorAll("[" + liveBlockAttribute + "]").forEach(item => {
+    getLiveBlock(item);
+  });
+  
+  // Listen button src-data-live
+  document.querySelectorAll("[src-" + liveBlockAttribute + "]").forEach(item => {
+    item.addEventListener("click", event => {
+      btnToBlock(event, item);
+    });
+  });
+  
+  // Listen live-form
+  document.querySelectorAll(liveFormSelector).forEach(item => {
+    if (item.querySelector("form") !== null) {
+      item.querySelector("form").addEventListener("submit", e => {
+        e.preventDefault();
+        sendForm(e, item);
+      });
+    }
+  });
 }
 
 /**
