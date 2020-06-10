@@ -1,6 +1,6 @@
 {
   "name": "piedweb-cms-js-helpers",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "PiedWeb/CMS (php)'s javascript functions for ui front end (native)",
   "author": "Robin D. <contact@piedweb.com>",
   "license": "MIT",
@@ -19,8 +19,6 @@
     "url": "https://github.com/PiedWeb/piedweb-cms-js-helpers/issues"
   },
   "homepage": "https://dev.piedweb.com",
-  "dependencies": {
-  },
-  "devDependencies": {
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
