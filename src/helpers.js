@@ -13,38 +13,44 @@
 
 /**
  * Live Block Watcher (and button)
- * 
+ *
  * Fetch (ajax) function permitting to get block via a POST request
  *
  * @param {string} attribute
  */
-export function liveBlock(liveBlockAttribute = "data-live", liveFormSelector = ".live-form") {
-    
-  var btnToBlock = function(event, btn) {
-    btn.setAttribute(liveBlockAttribute, btn.getAttribute("src-"+liveBlockAttribute));
+export function liveBlock(
+  liveBlockAttribute = 'data-live',
+  liveFormSelector = '.live-form'
+) {
+  var btnToBlock = function (event, btn) {
+    btn.setAttribute(
+      liveBlockAttribute,
+      btn.getAttribute('src-' + liveBlockAttribute)
+    );
     getLiveBlock(btn);
-  }
-  
-  var getLiveBlock = function(item) {
+  };
+
+  var getLiveBlock = function (item) {
     fetch(item.getAttribute(liveBlockAttribute), {
       //headers: { "Content-Type": "application/json", Accept: "text/plain" },
-      method: "POST",
-      credentials: "include"
+      method: 'POST',
+      credentials: 'include',
     })
-    .then(function(response) {
-      return response.text();
-    })
-    .then(function(body) {
-      item.removeAttribute(liveBlockAttribute);
-      item.outerHTML = body;
-    }).
-    then(function() {
-      document.dispatchEvent(new Event("DOMChanged"));
-    });
-  }
+      .then(function (response) {
+        return response.text();
+      })
+      .then(function (body) {
+        item.removeAttribute(liveBlockAttribute);
+        item.outerHTML = body;
+      })
+      .then(function () {
+        document.dispatchEvent(new Event('DOMChanged'));
+      });
+  };
 
-  var htmlLoader = '<div style="width:1em;height:1em;border: 2px solid #222;border-top-color: #fff;border-radius: 50%;  animation: 1s spin linear infinite;"></div><style>@keyframes spin {from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>';
-  
+  var htmlLoader =
+    '<div style="width:1em;height:1em;border: 2px solid #222;border-top-color: #fff;border-radius: 50%;  animation: 1s spin linear infinite;"></div><style>@keyframes spin {from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style>';
+
   var setLoader = function (form) {
     var $submitButton = getSubmitButton(form);
     if ($submitButton !== undefined) {
@@ -52,55 +58,56 @@ export function liveBlock(liveBlockAttribute = "data-live", liveFormSelector = "
       $submitButton.innerHTML = '';
       $submitButton.outerHTML = htmlLoader;
     }
-  }
-  
-  var sendForm = function(form, liveFormBlock) {
-     setLoader(form);
-     
+  };
+
+  var sendForm = function (form, liveFormBlock) {
+    setLoader(form);
+
     var formData = new FormData(form.srcElement);
     fetch(form.srcElement.action, {
-      method: "POST",
+      method: 'POST',
       body: formData,
-      credentials: "include"
+      credentials: 'include',
     })
-      .then(function(response) {
+      .then(function (response) {
         return response.text();
       })
-      .then(function(body) {
+      .then(function (body) {
         liveFormBlock.outerHTML = body;
       })
-      .then(function() {
-        document.dispatchEvent(new Event("DOMChanged"));
+      .then(function () {
+        document.dispatchEvent(new Event('DOMChanged'));
       });
   };
 
-  var getSubmitButton = function(form) {
-    if (form.srcElement.querySelector("[type=submit]") !== null) {
-      return form.srcElement.querySelector("[type=submit]");
+  var getSubmitButton = function (form) {
+    if (form.srcElement.querySelector('[type=submit]') !== null) {
+      return form.srcElement.querySelector('[type=submit]');
     }
-    if (form.srcElement.getElementsByTagName("button") !== null) {
-      return form.srcElement.getElementsByTagName("button")[0];
+    if (form.srcElement.getElementsByTagName('button') !== null) {
+      return form.srcElement.getElementsByTagName('button')[0];
     }
     return null;
   };
-  
-  
+
   // Listen data-live
-  document.querySelectorAll("[" + liveBlockAttribute + "]").forEach(item => {
+  document.querySelectorAll('[' + liveBlockAttribute + ']').forEach((item) => {
     getLiveBlock(item);
   });
-  
+
   // Listen button src-data-live
-  document.querySelectorAll("[src-" + liveBlockAttribute + "]").forEach(item => {
-    item.addEventListener("click", event => {
-      btnToBlock(event, item);
+  document
+    .querySelectorAll('[src-' + liveBlockAttribute + ']')
+    .forEach((item) => {
+      item.addEventListener('click', (event) => {
+        btnToBlock(event, item);
+      });
     });
-  });
-  
+
   // Listen live-form
-  document.querySelectorAll(liveFormSelector).forEach(item => {
-    if (item.querySelector("form") !== null) {
-      item.querySelector("form").addEventListener("submit", e => {
+  document.querySelectorAll(liveFormSelector).forEach((item) => {
+    if (item.querySelector('form') !== null) {
+      item.querySelector('form').addEventListener('submit', (e) => {
         e.preventDefault();
         sendForm(e, item);
       });
@@ -116,16 +123,16 @@ export function liveBlock(liveBlockAttribute = "data-live", liveFormSelector = "
 export function responsiveImage(src) {
   var screenWidth = window.innerWidth;
   if (screenWidth <= 576) {
-    src = src.replace("/default/", "/xs/");
+    src = src.replace('/default/', '/xs/');
   } else if (screenWidth <= 768) {
-    src = src.replace("/default/", "/sm/");
+    src = src.replace('/default/', '/sm/');
   } else if (screenWidth <= 992) {
-    src = src.replace("/default/", "/md/");
+    src = src.replace('/default/', '/md/');
   } else if (screenWidth <= 1200) {
-    src = src.replace("/default/", "/lg/");
+    src = src.replace('/default/', '/lg/');
   } else {
     // 1200+
-    src = src.replace("/default/", "/xl/");
+    src = src.replace('/default/', '/xl/');
   }
 
   return src;
@@ -137,14 +144,14 @@ export function responsiveImage(src) {
  *
  * @param {string}  attribute
  */
-export async function uncloakLinks(attribute = "data-rot") {
-  var convertLink = function(element) {
+export async function uncloakLinks(attribute = 'data-rot') {
+  var convertLink = function (element) {
     // fix "bug" with img
     if (element.getAttribute(attribute) === null) {
-      var element = element.closest("[" + attribute + "]");
+      var element = element.closest('[' + attribute + ']');
     }
     if (element.getAttribute(attribute) === null) return;
-    var link = document.createElement("a");
+    var link = document.createElement('a');
     var href = element.getAttribute(attribute);
     element.removeAttribute(attribute);
     for (var i = 0, n = element.attributes.length; i < n; i++) {
@@ -155,31 +162,31 @@ export async function uncloakLinks(attribute = "data-rot") {
     }
     link.innerHTML = element.innerHTML;
     link.setAttribute(
-      "href",
+      'href',
       responsiveImage(convertShortchutForLink(rot13ToText(href)))
     );
     element.parentNode.replaceChild(link, element);
     return link;
   };
 
-  var convertThemAll = function(attribute) {
-    [].forEach.call(document.querySelectorAll("[" + attribute + "]"), function(
+  var convertThemAll = function (attribute) {
+    [].forEach.call(document.querySelectorAll('[' + attribute + ']'), function (
       element
     ) {
       convertLink(element);
     });
   };
 
-  var fireEventLinksBuilt = async function(element, event) {
-    await document.dispatchEvent(new Event("DOMChanged"));
+  var fireEventLinksBuilt = async function (element, event) {
+    await document.dispatchEvent(new Event('DOMChanged'));
 
     var clickEvent = new Event(event.type);
     element.dispatchEvent(clickEvent);
   };
 
-  var convertLinkOnEvent = async function(event) {
+  var convertLinkOnEvent = async function (event) {
     // convert them all if it's an image (thanks this bug), permit to use gallery (baguetteBox)
-    if (event.target.tagName == "IMG") {
+    if (event.target.tagName == 'IMG') {
       await convertThemAll(attribute);
       var element = event.target;
     } else {
@@ -188,26 +195,26 @@ export async function uncloakLinks(attribute = "data-rot") {
     fireEventLinksBuilt(element, event);
   };
 
-  [].forEach.call(document.querySelectorAll("[" + attribute + "]"), function(
+  [].forEach.call(document.querySelectorAll('[' + attribute + ']'), function (
     element
   ) {
     element.addEventListener(
-      "touchstart",
-      function(e) {
+      'touchstart',
+      function (e) {
+        convertLinkOnEvent(e);
+      },
+      { once: true, passive: true }
+    );
+    element.addEventListener(
+      'click',
+      function (e) {
         convertLinkOnEvent(e);
       },
       { once: true }
     );
     element.addEventListener(
-      "click",
-      function(e) {
-        convertLinkOnEvent(e);
-      },
-      { once: true }
-    );
-    element.addEventListener(
-      "mouseover",
-      function(e) {
+      'mouseover',
+      function (e) {
         convertLinkOnEvent(e);
       },
       { once: true }
@@ -220,28 +227,28 @@ export async function uncloakLinks(attribute = "data-rot") {
  *
  * @param {string}  attribute
  */
-export function convertFormFromRot13(attribute = "data-frot") {
-  [].forEach.call(document.querySelectorAll("[" + attribute + "]"), function(
+export function convertFormFromRot13(attribute = 'data-frot') {
+  [].forEach.call(document.querySelectorAll('[' + attribute + ']'), function (
     element
   ) {
     var action = element.getAttribute(attribute);
     element.removeAttribute(attribute);
     element.setAttribute(
-      "action",
+      'action',
       convertShortchutForLink(rot13ToText(action))
     );
   });
 }
 
 export function convertShortchutForLink(str) {
-  if (str.charAt(0) == "-") {
-    return str.replace("-", "http://");
+  if (str.charAt(0) == '-') {
+    return str.replace('-', 'http://');
   }
-  if (str.charAt(0) == "_") {
-    return str.replace("_", "https://");
+  if (str.charAt(0) == '_') {
+    return str.replace('_', 'https://');
   }
-  if (str.charAt(0) == "@") {
-    return str.replace("@", "mailto:");
+  if (str.charAt(0) == '@') {
+    return str.replace('@', 'mailto:');
   }
   return str;
 }
@@ -252,10 +259,10 @@ export function convertShortchutForLink(str) {
  * @param {string}  text
  */
 export function readableEmail(selector) {
-  document.querySelectorAll(selector).forEach(function(item) {
+  document.querySelectorAll(selector).forEach(function (item) {
     var mail = rot13ToText(item.textContent);
-    item.innerHTML = '<a href="mailto:' + mail + '">' + mail + "</a>";
-    if (selector.charAt(0) == ".") {
+    item.innerHTML = '<a href="mailto:' + mail + '">' + mail + '</a>';
+    if (selector.charAt(0) == '.') {
       item.classList.remove(selector.substring(1));
     }
   });
@@ -267,18 +274,18 @@ export function readableEmail(selector) {
  * @param {string}  str
  */
 export function rot13ToText(str) {
-  return str.replace(/[a-zA-Z]/g, function(c) {
+  return str.replace(/[a-zA-Z]/g, function (c) {
     return String.fromCharCode(
-      (c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26
+      (c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26
     );
   });
 }
 
 export function testWebPSupport() {
-  var elem = document.createElement("canvas");
+  var elem = document.createElement('canvas');
 
-  if (elem.getContext && elem.getContext("2d")) {
-    return elem.toDataURL("image/webp").indexOf("data:image/webp") == 0;
+  if (elem.getContext && elem.getContext('2d')) {
+    return elem.toDataURL('image/webp').indexOf('data:image/webp') == 0;
   }
 
   return false;
@@ -288,11 +295,11 @@ export function testWebPSupport() {
  * Used in ThemeComponent
  */
 export function convertImageLinkToWebPLink() {
-  var switchToWebP = function() {
-    [].forEach.call(document.querySelectorAll("a[dwl]"), function(element) {
-      var href = responsiveImage(element.getAttribute("dwl"));
-      element.setAttribute("href", href);
-      element.removeAttribute("dwl");
+  var switchToWebP = function () {
+    [].forEach.call(document.querySelectorAll('a[dwl]'), function (element) {
+      var href = responsiveImage(element.getAttribute('dwl'));
+      element.setAttribute('href', href);
+      element.removeAttribute('dwl');
     });
   };
 
@@ -312,14 +319,14 @@ export function convertImageLinkToWebPLink() {
  * will be converted to
  *
  * <img src=/img/me.png alt=Tagada />
- * 
+ *
  * still used in piedvert. To remove ?!
  */
-export function imgLazyLoad(attribute = "data-img") {
-  [].forEach.call(document.querySelectorAll("[" + attribute + "]"), function(
+export function imgLazyLoad(attribute = 'data-img') {
+  [].forEach.call(document.querySelectorAll('[' + attribute + ']'), function (
     img
   ) {
-    var newDomImg = document.createElement("img");
+    var newDomImg = document.createElement('img');
     var src = img.getAttribute(attribute);
     img.removeAttribute(attribute);
     for (var i = 0, n = img.attributes.length; i < n; i++) {
@@ -328,12 +335,12 @@ export function imgLazyLoad(attribute = "data-img") {
         img.attributes[i].nodeValue
       );
     }
-    if (newDomImg.getAttribute("alt") === null && img.textContent != "") {
-      newDomImg.setAttribute("alt", img.textContent);
+    if (newDomImg.getAttribute('alt') === null && img.textContent != '') {
+      newDomImg.setAttribute('alt', img.textContent);
     }
     newDomImg.setAttribute(
-      "src",
-      typeof responsiveImage === "function" ? responsiveImage(src) : src
+      'src',
+      typeof responsiveImage === 'function' ? responsiveImage(src) : src
     );
     img.outerHTML = newDomImg.outerHTML;
   });
