@@ -130,7 +130,6 @@ export function seasonedBackground() {
             img.style = 'display:none';
           });
         element.style = 'display:block';
-        console.log('change element');
       }
     }
   });
