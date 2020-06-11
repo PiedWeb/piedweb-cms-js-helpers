@@ -124,7 +124,7 @@ export function seasonedBackground() {
   document.querySelectorAll('[x-hash]').forEach(function (element) {
     if (window.location.hash) {
       if (element.getAttribute('x-hash') == window.location.hash.substring(1)) {
-        element.parentNode.parentNode.parentNode
+        element.parentNode.parentNode
           .querySelectorAll('img')
           .forEach(function (img) {
             img.style = 'display:none';
