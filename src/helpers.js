@@ -120,11 +120,9 @@ export function liveBlock(
  * Block to replace Watcher
  * On $event on element find via $attribute, set attribute's content in element.innerHTML
  */
-export function replaceOn(attribute = 'replaceBy', event = 'click') {
-  var loadVideo = function (event) {
-    var element = event.currentTarget;
+export function replaceOn(attribute = 'replaceBy', eventName = 'click') {
+  var loadVideo = function (element) {
     var content = element.getAttribute(attribute);
-    element.style.zIndex = '2000';
     if (
       element.classList.contains('hero-banner-overlay-lg') &&
       element.querySelector('picture') &&
@@ -132,6 +130,7 @@ export function replaceOn(attribute = 'replaceBy', event = 'click') {
     ) {
       element.querySelector('picture').outerHTML = content;
       element.querySelector('.btn-play').outerHTML = ' ';
+      element.style.zIndex = '2000';
     } else {
       element.innerHTML = content;
     }
@@ -139,9 +138,19 @@ export function replaceOn(attribute = 'replaceBy', event = 'click') {
     document.dispatchEvent(new Event('DOMChanged'));
   };
 
-  document.querySelectorAll('[' + attribute + ']').forEach(function (element) {
-    element.addEventListener(event, loadVideo, { once: true });
-  });
+  document
+    .querySelectorAll('[' + attribute + ']:not([listen])')
+    .forEach(function (element) {
+      element.setAttribute('listen', '');
+      element.addEventListener(
+        eventName,
+        function (event) {
+          loadVideo(event.currentTarget); //event.currentTarget;
+          element.removeAttribute('listen');
+        },
+        { once: true }
+      );
+    });
 }
 
 /**
