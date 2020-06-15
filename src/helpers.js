@@ -117,6 +117,27 @@ export function liveBlock(
 }
 
 /**
+ * Block to replace Watcher
+ * On $event on element find via $attribute, set attribute's content in element.innerHTML
+ */
+export function replaceOn(attribute = 'replaceBy', event = 'click') {
+  var loadVideo = function (element) {
+    var innerHtml = element.getAttribute(attribute);
+    element.innerHTML = innerHtml;
+  };
+
+  document.querySelectorAll('[' + attribute + ']').forEach(function (element) {
+    element.addEventListener(
+      event,
+      function () {
+        loadVideo(element);
+      },
+      { once: true }
+    );
+  });
+}
+
+/**
  *
  *
  */
