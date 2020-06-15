@@ -124,6 +124,8 @@ export function replaceOn(attribute = 'replaceBy', event = 'click') {
   var loadVideo = function (element) {
     var innerHtml = element.getAttribute(attribute);
     element.innerHTML = innerHtml;
+    element.removeAttribute(attribute);
+    document.dispatchEvent(new Event('DOMChanged'));
   };
 
   document.querySelectorAll('[' + attribute + ']').forEach(function (element) {
