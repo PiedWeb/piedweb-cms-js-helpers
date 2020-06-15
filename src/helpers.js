@@ -121,22 +121,26 @@ export function liveBlock(
  * On $event on element find via $attribute, set attribute's content in element.innerHTML
  */
 export function replaceOn(attribute = 'replaceBy', event = 'click') {
-  var loadVideo = function (element) {
-    var innerHtml = element.getAttribute(attribute);
+  var loadVideo = function (event) {
+    var element = event.currentTarget;
+    var content = element.getAttribute(attribute);
     element.style.zIndex = '2000';
-    element.innerHTML = innerHtml;
+    if (
+      element.classList.contains('hero-banner-overlay-lg') &&
+      element.querySelector('picture') &&
+      window.innerWidth < 992
+    ) {
+      element.querySelector('picture').outerHTML = content;
+      element.querySelector('.btn-play').outerHTML = ' ';
+    } else {
+      element.innerHTML = content;
+    }
     element.removeAttribute(attribute);
     document.dispatchEvent(new Event('DOMChanged'));
   };
 
   document.querySelectorAll('[' + attribute + ']').forEach(function (element) {
-    element.addEventListener(
-      event,
-      function () {
-        loadVideo(element);
-      },
-      { once: true }
-    );
+    element.addEventListener(event, loadVideo, { once: true });
   });
 }
 
