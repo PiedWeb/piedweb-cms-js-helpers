@@ -123,6 +123,7 @@ export function liveBlock(
 export function replaceOn(attribute = 'replaceBy', event = 'click') {
   var loadVideo = function (element) {
     var innerHtml = element.getAttribute(attribute);
+    element.style.zIndex = '2000';
     element.innerHTML = innerHtml;
     element.removeAttribute(attribute);
     document.dispatchEvent(new Event('DOMChanged'));
