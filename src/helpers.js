@@ -130,9 +130,11 @@ export function replaceOn(attribute = 'replaceBy', eventName = 'click') {
     ) {
       element.querySelector('picture').outerHTML = content;
       element.querySelector('.btn-play').outerHTML = ' ';
-      element.style.zIndex = '2000';
     } else {
       element.innerHTML = content;
+    }
+    if (element.classList.contains('hero-banner-overlay-lg')) {
+      element.style.zIndex = '2000';
     }
     element.removeAttribute(attribute);
     document.dispatchEvent(new Event('DOMChanged'));
